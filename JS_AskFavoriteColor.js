@@ -11,29 +11,35 @@ import { Big } from "big.js";
 // END EXTRA CODE
 
 /**
- * @returns {Promise.<string>}
+ * @returns {Promise.<void>}
  */
-export async function JS_AskFavoriteColor() {
+export async function AskFavouriteColor() {
 	// BEGIN USER CODE
-	return new Promise(function (resolve, reject) {
-		const SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
+	return new Promise((resolve)=>{
+		const SpeechRecognition = SpeechRecognition 
+			|| webkitSpeechRecognition;
 		let recognition = new SpeechRecognition();
 		let pid;
+
 		recognition.lang = "en-US";
 		recognition.continuous = false;
 		recognition.interimResults = false;
 		recognition.maxAlternatives = 1;
-		recognition.onresult = function (event) {
-			var color = event.results[0][0].transcript;
-			console.log('Result received: ' + color);
+		recognition.onresult = function(result){
+			// do something with result
+			const spokenColour = result.results[0][0].transcript;
+			const confidence = result.results[0][0].confidence;
+			console.log(spokenColour);
 			mx.ui.hideProgress(pid);
-			resolve(color);
+			resolve({
+				colour: spokenColour,
+				confidence: confidence
+			});
 		}
 		recognition.start();
-		pid = mx.ui.showProgress("Now listening for your favorite color...");
-		//sometime later, resolve with a color..
-		// resolve('green');
+		pid = mx.ui.showProgress("Now listening for your favourite colour...");
 	});
+	
 	// throw new Error("JavaScript action was not implemented");
 	// END USER CODE
 }
